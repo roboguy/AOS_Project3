@@ -41,6 +41,16 @@
 			<artifactId>VectorClock</artifactId>
 			<version>0.1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>edu.utdallas.aos.p3</groupId>
+			<artifactId>FileSystem</artifactId>
+			<version>0.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client</artifactId>
+			<version>1.20.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

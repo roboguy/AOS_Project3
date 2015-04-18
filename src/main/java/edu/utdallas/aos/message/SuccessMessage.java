@@ -1,18 +1,15 @@
 package edu.utdallas.aos.message;
 
-/*
- * 
- */
+public class SuccessMessage extends Message {
 
-public class ReadMessage extends Message {
 
 	@Override
 	public String getType() {
 		return this.type;
 	}
 	
-	public ReadMessage(){
-		this.type = "READ";
+	public SuccessMessage(){
+		this.type = "SUCCESS";
 	}
-	
+
 }
