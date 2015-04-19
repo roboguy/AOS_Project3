@@ -18,7 +18,6 @@ public class Context {
 	
 	public static volatile Object lock = new Object();
 	public static volatile FileSystemHandler fsHandler;
-	public static volatile ConcurrentHashMap<String, String> nodeInfo;
 	public static volatile ExponentialDistribution requestDelay;
 	public static volatile Node myInfo;
 	public static volatile ConcurrentHashMap<Integer, Node> nodeInfos = new ConcurrentHashMap<>();
