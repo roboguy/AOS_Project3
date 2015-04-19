@@ -4,23 +4,21 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 
-import edu.utdallas.aos.message.DoneMessage;
 import edu.utdallas.aos.message.Message;
 import edu.utdallas.aos.message.ReadMessage;
-import edu.utdallas.aos.message.SuccessMessage;
 import edu.utdallas.aos.message.WriteMessage;
 
 public class MessageTest {
 	
 	@Test
 	public void testConstructors(){
-		Message success = new SuccessMessage();
-		Message done 	= new DoneMessage();
+//		Message success = new SuccessMessage();
+//		Message done 	= new DoneMessage();
 		Message read	= new ReadMessage();
 		Message write	= new WriteMessage();
 		
-		System.out.println(success.getType());
-		System.out.println(done.getType());
+//		System.out.println(success.getType());
+//		System.out.println(done.getType());
 		System.out.println(read.getType());
 		System.out.println(write.getType());
 		
