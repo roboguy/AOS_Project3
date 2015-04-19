@@ -25,9 +25,8 @@ public class ReadMessageHandler implements MessageHandler<Message>{
 
 	@Override
 	public void handleMessage(Message message) {
-		// TODO Auto-generated method stub
 		
-		String toNodeId=message.getNodeID();
+		String toNodeId	= message.getNodeID();
 		logger.debug("In READ Message Handler from "+toNodeId);
 		synchronized(Context.lock)
 		{

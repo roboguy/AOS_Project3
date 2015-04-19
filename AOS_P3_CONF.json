@@ -1,19 +1,9 @@
 {
-  "N": 3,
+  "N": 1,
   "nodes": [
     {
       "id": 0,
       "host": "dc24.utdallas.edu",
-      "port": "50002"
-    },
-    {
-      "id": 1,
-      "host": "dc25.utdallas.edu",
-      "port": "50002"
-    },
-    {
-      "id": 2,
-      "host": "dc26.utdallas.edu",
       "port": "50002"
     }
   ],
@@ -24,4 +14,4 @@
   },
   "total_Number_Of_Requests": 1000,
   "mean_Consecutive_Request_Delay": 50
-}
+} 

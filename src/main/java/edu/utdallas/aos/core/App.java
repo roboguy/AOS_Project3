@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.gson.Gson;
@@ -33,20 +34,18 @@ public class App {
 			System.out.println("Please enter input params.");
 			System.exit(0);
 		}
-		
-		Integer nodeID = Integer.parseInt(args[1]);
 
+		Arguments arguments = parseArgs(args);
+		Integer nodeID = Integer.parseInt(arguments.getMyID());
+		
 		System.setProperty("logFilename", "app" + nodeID + ".log");
 
-		org.apache.logging.log4j.core.LoggerContext ctx = (org.apache.logging.log4j.core.LoggerContext) LogManager
-				.getContext(false);
+		LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		ctx.reconfigure();
 
 		Logger logger = LogManager.getLogger(App.class);
 		logger.debug("Reading Configs");
 
-		Arguments arguments = parseArgs(args);
-		
 		
 		Config conf = readConfig();
 		if (conf != null) {
@@ -61,17 +60,24 @@ public class App {
 		
 		logger.debug("Initializing FileSystem");
 		
-		//Init FS Handler with default FileInfo in each file
-		//Default RU = Number of Nodes (assumed that every node starts off equally)
-		//Default VN = 0
+		/*
+		 * Init FS Handler with default FileInfo in each file
+		 * Default RU = Number of Nodes (assumed that every node starts off equally)
+		 * Default VN = 0
+		 */
+
 		
 		Integer defaultRU = conf.getN();
 		FileInfo defaultInformation = FileInfo.getDefaultInformation(defaultRU, 0);
 		String rootPath = "root" + nodeID.toString();
-		Context.fsHandler = new FileSystemHandler(rootPath, defaultInformation);
+		try {
+			Context.fsHandler = new FileSystemHandler(rootPath, defaultInformation);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+			logger.error(e1.getMessage());
+			System.exit(0);
+		}
 
-		System.out.println("My Node ID: " + arguments.getMyID());
-		
 		Context.myInfo = conf.getNodes().get(nodeID);
 		
 		Context.clock = new VectorClock();

@@ -1,6 +1,14 @@
 package edu.utdallas.aos.application;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+
+import edu.utdallas.aos.core.Context;
+import edu.utdallas.aos.p3.filesystem.FileInfo;
 
 public class InteractiveApplication implements Application {
 
@@ -34,10 +42,10 @@ public class InteractiveApplication implements Application {
 		
 		switch (operation) {
 		case "read":
-			System.out.println("Reading filename " + fileName);
+			processRead(fileName);
 			break;
 		case "write":
-			System.out.println("Writing filename " + fileName);
+			processWrite(fileName, inputScanner);
 			break;
 		case "list":
 			System.out.println("List of files");
@@ -54,6 +62,30 @@ public class InteractiveApplication implements Application {
 		}
 	}
 
+	private void processWrite(String fileName, Scanner inputScanner2) {
+		System.out.println("> Enter Content");
+		System.out.print("$ ");
+		String newContent = inputScanner2.nextLine();
+		try {
+			Context.fsHandler.getFilesystem().write(fileName, newContent);
+		} catch (IOException e) {
+			System.out.println("Unable to write content to file.");
+		}
+	}
+
+	private void processRead(String fileName) {
+		//System.out.println("Reading filename " + fileName);
+		
+		//TODO: Change to Replication Client's read method
+		try {
+			System.out.println(Context.fsHandler.getFilesystem().read(fileName));
+		} catch (FileNotFoundException e) {
+			System.out.println("File Not Found, Please try again");
+		} catch (NoSuchElementException e) {
+			System.out.println("EMPTY");
+		}
+	}
+
 	private String commandPrompt(Scanner inputScanner) {
 		System.out.print("> ");
 		String command = inputScanner.nextLine();
@@ -66,9 +98,10 @@ public class InteractiveApplication implements Application {
 				.println("Distributed & Replicated Fault Tolerant File System");
 		System.out.println("Running in interactive mode");
 		System.out.println("List of Files Available:");
-		System.out.println("1.txt");
-		System.out.println("2.txt");
-		System.out.println("3.txt");
+		Iterator<Entry<String, FileInfo>> iter = Context.fsHandler.getReplicatedFiles().entrySet().iterator();
+		while(iter.hasNext()){
+			System.out.println(iter.next().getKey());
+		}
 		System.out.println("Available Operations: read / write");
 		System.out.println("Example Command: read 1.txt");
 	}
