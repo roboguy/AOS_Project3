@@ -5,85 +5,65 @@ import com.google.gson.annotations.SerializedName;
 
 public class Params {
 
-	@SerializedName("key_distribution")
+	@SerializedName("exp_Backoff_min")
 	@Expose
-	private String keyDistribution;
-	@SerializedName("necessary_arg1")
+	private Integer expBackoffMin;
+	@SerializedName("exp_Backoff_max")
 	@Expose
-	private String necessaryArg1;
-	@SerializedName("necessary_arg2")
+	private Integer expBackoffMax;
+	@SerializedName("read_operation_percent")
 	@Expose
-	private String necessaryArg2;
-	@SerializedName("optional_arg1")
-	@Expose
-	private String optionalArg1;
+	private Integer readOperationPercent;
 
 	/**
 	 * 
-	 * @return The keyDistribution
+	 * @return The expBackoffMin
 	 */
-	public String getKeyDistribution() {
-		return keyDistribution;
+	public Integer getExpBackoffMin() {
+		return expBackoffMin;
 	}
 
 	/**
 	 * 
-	 * @param keyDistribution
-	 *            The key_distribution
+	 * @param expBackoffMin
+	 *            The exp_Backoff_min
 	 */
-	public void setKeyDistribution(String keyDistribution) {
-		this.keyDistribution = keyDistribution;
+	public void setExpBackoffMin(Integer expBackoffMin) {
+		this.expBackoffMin = expBackoffMin;
 	}
 
 	/**
 	 * 
-	 * @return The necessaryArg1
+	 * @return The expBackoffMax
 	 */
-	public String getNecessaryArg1() {
-		return necessaryArg1;
+	public Integer getExpBackoffMax() {
+		return expBackoffMax;
 	}
 
 	/**
 	 * 
-	 * @param necessaryArg1
-	 *            The necessary_arg1
+	 * @param expBackoffMax
+	 *            The exp_Backoff_max
 	 */
-	public void setNecessaryArg1(String necessaryArg1) {
-		this.necessaryArg1 = necessaryArg1;
+	public void setExpBackoffMax(Integer expBackoffMax) {
+		this.expBackoffMax = expBackoffMax;
 	}
 
 	/**
 	 * 
-	 * @return The necessaryArg2
+	 * @return The readOperationPercent
 	 */
-	public String getNecessaryArg2() {
-		return necessaryArg2;
+	public Integer getReadOperationPercent() {
+		return readOperationPercent;
 	}
 
 	/**
 	 * 
-	 * @param necessaryArg2
-	 *            The necessary_arg2
+	 * @param readOperationPercent
+	 *            The read_operation_percent
 	 */
-	public void setNecessaryArg2(String necessaryArg2) {
-		this.necessaryArg2 = necessaryArg2;
-	}
-
-	/**
-	 * 
-	 * @return The optionalArg1
-	 */
-	public String getOptionalArg1() {
-		return optionalArg1;
-	}
-
-	/**
-	 * 
-	 * @param optionalArg1
-	 *            The optional_arg1
-	 */
-	public void setOptionalArg1(String optionalArg1) {
-		this.optionalArg1 = optionalArg1;
+	public void setReadOperationPercent(Integer readOperationPercent) {
+		this.readOperationPercent = readOperationPercent;
 	}
 
 }

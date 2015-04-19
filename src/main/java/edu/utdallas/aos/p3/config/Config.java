@@ -20,9 +20,6 @@ public class Config {
 	@SerializedName("mean_Consecutive_Request_Delay")
 	@Expose
 	private Integer meanConsecutiveRequestDelay;
-	@SerializedName("mean_Duration_Of_CS")
-	@Expose
-	private Integer meanDurationOfCS;
 
 	/**
 	 * 
@@ -108,23 +105,6 @@ public class Config {
 	public void setMeanConsecutiveRequestDelay(
 			Integer meanConsecutiveRequestDelay) {
 		this.meanConsecutiveRequestDelay = meanConsecutiveRequestDelay;
-	}
-
-	/**
-	 * 
-	 * @return The meanDurationOfCS
-	 */
-	public Integer getMeanDurationOfCS() {
-		return meanDurationOfCS;
-	}
-
-	/**
-	 * 
-	 * @param meanDurationOfCS
-	 *            The mean_Duration_Of_CS
-	 */
-	public void setMeanDurationOfCS(Integer meanDurationOfCS) {
-		this.meanDurationOfCS = meanDurationOfCS;
 	}
 
 }

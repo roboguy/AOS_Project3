@@ -1,6 +1,7 @@
 package edu.utdallas.aos.core;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -13,7 +14,23 @@ public class ReplicationClient {
 		boolean qObtained = test(fileName);
 
 		while (!qObtained) {
-
+			long backoffDuration = 50;
+			try {
+				backoffDuration = Context.backoff.nextBackOffMillis();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if(backoffDuration > Context.backoff.getMaxIntervalMillis()){
+				Context.backoff.reset();
+			}
+			
+			try {
+				Thread.sleep(backoffDuration);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			synchronized (Context.lock) {
 				FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(
 						fileName);
@@ -23,7 +40,6 @@ public class ReplicationClient {
 			} // SYNC Block ENDS
 
 			test(fileName);
-			
 		}//While Quorum Not obtained keep trying;
 		
 		String content = Context.fsHandler.getFilesystem().read(fileName);
@@ -59,8 +75,10 @@ public class ReplicationClient {
 
 		}// SYNC Block ENDS
 		
+		//Start Timer and wait till 500 ms expires
+		
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

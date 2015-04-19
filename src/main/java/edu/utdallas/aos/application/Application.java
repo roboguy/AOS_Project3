@@ -1,7 +1,8 @@
 package edu.utdallas.aos.application;
 
 public interface Application extends Runnable {
-
-	public void runApplication();
 	
+	public void runApplication();
+	public void setNumberOfRequests(Integer number);
+	public void setReadPercent(Integer percentReads);
 }

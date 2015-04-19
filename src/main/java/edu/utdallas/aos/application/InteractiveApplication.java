@@ -5,7 +5,9 @@ import java.util.Scanner;
 public class InteractiveApplication implements Application {
 
 	static Scanner inputScanner;
-
+	Integer numberOfRequests = 1;
+	Integer readPercent = 100;
+	
 	@Override
 	public void runApplication() {
 		printWelcomeMessage();
@@ -74,6 +76,16 @@ public class InteractiveApplication implements Application {
 	@Override
 	public void run() {
 		this.runApplication();
+	}
+
+	@Override
+	public void setNumberOfRequests(Integer number) {
+		this.numberOfRequests = number;
+	}
+
+	@Override
+	public void setReadPercent(Integer percentReads) {
+		this.readPercent = percentReads;
 	}
 
 }
