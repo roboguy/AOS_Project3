@@ -22,6 +22,18 @@ public abstract class Message implements IEncapsulateClock {
 	protected Integer RU;
 	@Expose
 	protected String content;
+	
+	@Expose
+	protected String nodeID;
+	
+	
+	public String getNodeID() {
+		return nodeID;
+	}
+
+	public void setNodeID(String nodeID) {
+		this.nodeID = nodeID;
+	}
 
 	/**
 	 * 
