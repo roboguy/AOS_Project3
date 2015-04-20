@@ -20,7 +20,6 @@ import edu.utdallas.aos.p3.filesystem.FileInfo;
 public class ReadMessageHandler implements MessageHandler<Message>{
 
 	static final Logger logger = LogManager.getLogger(ReadMessageHandler.class);
-	FileInfo fInfo=null;
 
 	@Override
 	public void handleMessage(Message message) {
@@ -31,8 +30,8 @@ public class ReadMessageHandler implements MessageHandler<Message>{
 		{
 			if(message.getType().equals("READ"))
 			{
-				String fName=message.getFileName();
-				fInfo=Context.fsHandler.getReplicatedFiles().get(fName);
+				String fName 	= message.getFileName();
+				FileInfo fInfo	= Context.fsHandler.getReplicatedFiles().get(fName);
 				
 				ReentrantReadWriteLock  rwLock=fInfo.getReadWriteLock();
 				if(rwLock.readLock().tryLock())

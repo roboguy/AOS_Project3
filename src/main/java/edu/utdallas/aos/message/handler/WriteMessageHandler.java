@@ -21,7 +21,6 @@ import edu.utdallas.aos.p3.filesystem.FileInfo;
 public class WriteMessageHandler implements MessageHandler<Message>{
 
 	static final Logger logger = LogManager.getLogger(WriteMessageHandler.class);
-	FileInfo fInfo	= null;
 	
 	@Override
 	public void handleMessage(Message message) {
@@ -30,7 +29,7 @@ public class WriteMessageHandler implements MessageHandler<Message>{
 		synchronized (Context.lock) {
 			boolean gotWriteLock = false;
 			String fName	= message.getFileName();
-			fInfo=Context.fsHandler.getReplicatedFiles().get(fName);
+			FileInfo fInfo 	= Context.fsHandler.getReplicatedFiles().get(fName);
 			ReentrantReadWriteLock  rwLock	= fInfo.getReadWriteLock();
 			try {
 				gotWriteLock = rwLock.writeLock().tryLock(50, TimeUnit.MILLISECONDS);
@@ -56,8 +55,8 @@ public class WriteMessageHandler implements MessageHandler<Message>{
 				writeSuccessMsg.setRU(RU);
 				writeSuccessMsg.setVN(VN);
 				writeSuccessMsg.setNodeID(Context.myInfo.getId().toString());
-				Node toNode=Context.nodeInfos.get(toNodeId);
-				Integer port= Integer.parseInt(toNode.getPort());
+				Node toNode		= Context.nodeInfos.get(toNodeId);
+				Integer port	= Integer.parseInt(toNode.getPort());
 				String hostName = toNode.getHost();
 				
 				try {

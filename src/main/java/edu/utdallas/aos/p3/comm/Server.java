@@ -1,5 +1,7 @@
 package edu.utdallas.aos.p3.comm;
 
+import info.siyer.aos.clock.VectorClock;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
+import edu.utdallas.aos.core.Context;
 import edu.utdallas.aos.message.Message;
 import edu.utdallas.aos.message.handler.DoneReadMessageHandler;
 import edu.utdallas.aos.message.handler.DoneWriteMessageHandler;
@@ -86,10 +89,18 @@ public class Server extends Thread {
 				}
 				logger.debug("Started Request Handler to handle request.");
 
-				//TODO: Handle Message String
+				//Handle Message String
 				String messageStr 	= sb.toString();
 				Message message 	= serverGson.fromJson(messageStr, Message.class);
 				String messageType 	= message.getType();
+				
+				VectorClock msgClk	= VectorClock.deserializeClock(message);
+				
+				synchronized (Context.lock) {
+					Context.clock = Context.clock.merge(msgClk);
+					Context.clock.increment(message.getNodeID());
+				}
+				
 				
 				if(messageType.equals("READ")){
 					new ReadMessageHandler().handleMessage(message);
@@ -106,9 +117,9 @@ public class Server extends Thread {
 				} else {
 					logger.error("Unable to handle unkown message type");
 				}
-			}
+			}//While Server is Running ENDS
 
-		}
+		}//Try Block ENDS
 		catch(IOException ex)
 		{
 			if(isRunning == true){
@@ -132,7 +143,7 @@ public class Server extends Thread {
 					logger.info("Server Shut Down");
 				}
 			}
-		}
+		}//Finally ShutDown Server gracefully
 	}
 	
 }
