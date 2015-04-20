@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import edu.utdallas.aos.core.Context;
+import edu.utdallas.aos.core.ReplicationClient;
 import edu.utdallas.aos.p3.filesystem.FileInfo;
 
 public class InteractiveApplication implements Application {
@@ -15,6 +16,7 @@ public class InteractiveApplication implements Application {
 	static Scanner inputScanner;
 	Integer numberOfRequests = 1;
 	Integer readPercent = 100;
+	private ReplicationClient replicationClient;
 	
 	@Override
 	public void runApplication() {
@@ -78,11 +80,13 @@ public class InteractiveApplication implements Application {
 		
 		//TODO: Change to Replication Client's read method
 		try {
-			System.out.println(Context.fsHandler.getFilesystem().read(fileName));
+			System.out.println(replicationClient.readFile(fileName));
 		} catch (FileNotFoundException e) {
 			System.out.println("File Not Found, Please try again");
 		} catch (NoSuchElementException e) {
 			System.out.println("EMPTY");
+		} finally {
+			replicationClient.readUnlockFile(fileName);
 		}
 	}
 
@@ -119,6 +123,12 @@ public class InteractiveApplication implements Application {
 	@Override
 	public void setReadPercent(Integer percentReads) {
 		this.readPercent = percentReads;
+	}
+
+	@Override
+	public void setReplicationClient(ReplicationClient client) {
+		this.replicationClient = client;
+		
 	}
 
 }

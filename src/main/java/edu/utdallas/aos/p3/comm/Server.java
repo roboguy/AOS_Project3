@@ -9,6 +9,16 @@ import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
+
+import edu.utdallas.aos.message.Message;
+import edu.utdallas.aos.message.handler.DoneReadMessageHandler;
+import edu.utdallas.aos.message.handler.DoneWriteMessageHandler;
+import edu.utdallas.aos.message.handler.ReadMessageHandler;
+import edu.utdallas.aos.message.handler.ReadSuccessMessageHandler;
+import edu.utdallas.aos.message.handler.WriteMessageHandler;
+import edu.utdallas.aos.message.handler.WriteSuccessMessageHandler;
+
 
 /*
  * This class implements a singleton TCP server.
@@ -18,10 +28,11 @@ public class Server extends Thread {
 
 	private static Server server = null;
 	public static volatile Boolean isRunning = true;
+	public static volatile Boolean isFailed = false;
 	public static ServerSocket serverSock = null;
 	private static Integer port = 100;
 	private static Logger logger = null;
-	
+	private static Gson serverGson = new Gson();
 	public void setPort(Integer por) {
 		port = por;
 	}
@@ -76,6 +87,25 @@ public class Server extends Thread {
 				logger.debug("Started Request Handler to handle request.");
 
 				//TODO: Handle Message String
+				String messageStr 	= sb.toString();
+				Message message 	= serverGson.fromJson(messageStr, Message.class);
+				String messageType 	= message.getType();
+				
+				if(messageType.equals("READ")){
+					new ReadMessageHandler().handleMessage(message);
+				} else if (messageType.equals("WRITE")){
+					new WriteMessageHandler().handleMessage(message);
+				} else if (messageType.equals("READSUCCESS")){
+					new ReadSuccessMessageHandler().handleMessage(message);
+				} else if (messageType.equals("WRITESUCCESS")){
+					new WriteSuccessMessageHandler().handleMessage(message);
+				} else if (messageType.equals("DONEREAD")){
+					new DoneReadMessageHandler().handleMessage(message);
+				} else if (messageType.equals("DONEWRITE")){
+					new DoneWriteMessageHandler().handleMessage(message);
+				} else {
+					logger.error("Unable to handle unkown message type");
+				}
 			}
 
 		}

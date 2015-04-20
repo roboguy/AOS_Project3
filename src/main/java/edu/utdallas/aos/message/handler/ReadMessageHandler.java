@@ -16,11 +16,10 @@ import edu.utdallas.aos.message.ReadSuccessMessage;
 import edu.utdallas.aos.p3.comm.TCPClient;
 import edu.utdallas.aos.p3.config.Node;
 import edu.utdallas.aos.p3.filesystem.FileInfo;
-import edu.utdallas.aos.p3.filesystem.FileSystem;
 
 public class ReadMessageHandler implements MessageHandler<Message>{
 
-	static final Logger logger = LogManager.getLogger(FileSystem.class);
+	static final Logger logger = LogManager.getLogger(ReadMessageHandler.class);
 	FileInfo fInfo=null;
 
 	@Override

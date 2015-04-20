@@ -8,22 +8,28 @@ import java.net.UnknownHostException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
+
 import edu.utdallas.aos.message.Message;
 
 public class TCPClient {
 
 	private static Logger logger = LogManager.getLogger(TCPClient.class);
-
+	private static Gson tcpGson = new Gson();
 	public static void sendMessage(Message message, String hostName, Integer port,
 			String toNodeID) throws UnknownHostException, IOException {
-		//TODO: Update vector clock with nodeID
-		//TODO: Create GSON object to serealize message  and send Message string
+		
+		//GSON object to serealize message  and send Message string
+		String messageString = tcpGson.toJson(message);
 		logger.debug("sending request to host: " + hostName);
+		
 		Socket clientSocket = new Socket(hostName, port);
 		PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
-		logger.debug(message);
-		//writer.println(message);
+		logger.debug(messageString);
+		
+		writer.println(messageString);
 		writer.close();
+		
 		clientSocket.close();
 	}
 
