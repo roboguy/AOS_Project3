@@ -4,7 +4,7 @@
 
 	<groupId>edu.utdallas.aos</groupId>
 	<artifactId>AOS_Project3</artifactId>
-	<version>0.0.1</version>
+	<version>0.9</version>
 	<packaging>jar</packaging>
 
 	<name>AOSProject3</name>
