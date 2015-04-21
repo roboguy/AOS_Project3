@@ -2,8 +2,11 @@ package edu.utdallas.aos.core;
 
 import info.siyer.aos.clock.VectorClock;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -26,8 +29,21 @@ public class ReplicationClient {
 
 	public String readFile(String fileName) throws FileNotFoundException, NoSuchElementException {
 
+		
+		FileInfo fExists = Context.fsHandler.getReplicatedFiles().get(fileName);
+		
+		if(fExists == null){
+			throw new FileNotFoundException();
+		}
+		
+		//Increment my entry in the vector clock to signal my readEvent.
+		String myID = Context.myInfo.getId().toString();
+		Context.clock.increment(myID);
+		
 		boolean readQObtained = requestReadQuorum(fileName);
+		
 		String content = "";
+		
 		while (!readQObtained) {
 			
 			// Exponential Backoff
@@ -70,10 +86,8 @@ public class ReplicationClient {
 	private boolean requestReadQuorum(String fileName) {
 
 		synchronized (Context.lock) {
-
-			//Increment my entry in the vector clock to signal my readEvent.
+			
 			String myID = Context.myInfo.getId().toString();
-			Context.clock.increment(myID);
 			
 			FileInfo fInfo = Context.fsHandler.getReplicatedFiles()
 					.get(fileName);
@@ -165,11 +179,25 @@ public class ReplicationClient {
 		 */
 		synchronized (Context.lock) {
 			
+			FileInfo fExists = Context.fsHandler.getReplicatedFiles().get(fileName);
+			
+			if(fExists == null){
+				return;
+			}
 			
 			String myID		= Context.myInfo.getId().toString();
 			//Increment Vector Clock to indicate my send event;
 			Context.clock.increment(myID);
-			
+			try {
+				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
+				StringBuilder sb = new StringBuilder();
+				sb.append(VectorClock.serializeClock(Context.clock) +"::");
+				sb.append("READ");
+				out.println(sb.toString());
+				out.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
 			
 //			//Update Version Number
@@ -203,7 +231,7 @@ public class ReplicationClient {
 				String key = entry.getKey();
 				
 				//Dont send done message to myself
-				if(key == myID){
+				if(key.equals(myID)){
 					break;
 				}
 				P pi	= entry.getValue();

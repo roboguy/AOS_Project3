@@ -1,7 +1,12 @@
 package edu.utdallas.aos.application;
 
+import info.siyer.aos.clock.VectorClock;
+
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -81,10 +86,22 @@ public class InteractiveApplication implements Application {
 		//TODO: Change to Replication Client's read method
 		try {
 			System.out.println(replicationClient.readFile(fileName));
+			
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(Context.myInfo.getId() + "::");
+			sb.append(VectorClock.serializeClock(Context.clock) +"::");
+			out.print(sb.toString());
+			out.close();
+			
 		} catch (FileNotFoundException e) {
 			System.out.println("File Not Found, Please try again");
 		} catch (NoSuchElementException e) {
 			System.out.println("EMPTY");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			replicationClient.readUnlockFile(fileName);
 		}

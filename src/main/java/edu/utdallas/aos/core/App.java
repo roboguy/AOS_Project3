@@ -4,8 +4,10 @@ import info.siyer.aos.clock.VectorClock;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,6 +54,14 @@ public class App {
 			logger.debug("Configuration Read Successfully");
 		}
 		
+		File testClocks = new File("testClocks");
+		if(testClocks.exists()){
+			try {
+				FileUtils.cleanDirectory(testClocks);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		Double meanConseqReqDelay = conf.getMeanConsecutiveRequestDelay()
 				.doubleValue();
@@ -101,6 +111,7 @@ public class App {
 				.getMode());
 		application.setNumberOfRequests(conf.getTotalNumberOfRequests());
 		application.setReadPercent(conf.getParams().getReadOperationPercent());
+		application.setReplicationClient(new ReplicationClient());
 		Integer minBackoff = conf.getParams().getExpBackoffMin();
 		Integer maxBackoff = conf.getParams().getExpBackoffMax();
 		
@@ -117,7 +128,7 @@ public class App {
 
 		// Waiting 3 seconds for server to initialize.
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(30);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
