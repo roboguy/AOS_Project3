@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Set;
 
 import edu.utdallas.aos.core.Context;
 import edu.utdallas.aos.core.ReplicationClient;
@@ -56,6 +57,7 @@ public class InteractiveApplication implements Application {
 			break;
 		case "list":
 			System.out.println("List of files");
+			processList();
 			break;
 		case "exit":
 			System.out.println("Exit");
@@ -69,21 +71,37 @@ public class InteractiveApplication implements Application {
 		}
 	}
 
+	private void processList() {
+		Set<String> files = Context.fsHandler.getReplicatedFiles().keySet();
+		for(String name : files){
+			System.out.println(name);
+		}
+	}
+
 	private void processWrite(String fileName, Scanner inputScanner2) {
 		System.out.println("> Enter Content");
 		System.out.print("$ ");
 		String newContent = inputScanner2.nextLine();
 		try {
-			Context.fsHandler.getFilesystem().write(fileName, newContent);
+			replicationClient.writeFile(fileName, newContent);
+			
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(Context.myInfo.getId() + "::");
+			sb.append(VectorClock.serializeClock(Context.clock) +"::");
+			out.print(sb.toString());
+			out.close();
 		} catch (IOException e) {
 			System.out.println("Unable to write content to file.");
+		} finally {
+			replicationClient.writeUnlockFile(fileName);
 		}
 	}
 
 	private void processRead(String fileName) {
 		//System.out.println("Reading filename " + fileName);
 		
-		//TODO: Change to Replication Client's read method
 		try {
 			System.out.println(replicationClient.readFile(fileName));
 			
@@ -100,7 +118,6 @@ public class InteractiveApplication implements Application {
 		} catch (NoSuchElementException e) {
 			System.out.println("EMPTY");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			replicationClient.readUnlockFile(fileName);

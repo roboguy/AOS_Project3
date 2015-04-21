@@ -16,7 +16,7 @@ public class ReadSuccessMessageHandler implements MessageHandler<Message> {
 	
 	@Override
 	public void handleMessage(Message message) {
-		// TODO Auto-generated method stub
+
 		String toNodeId	= message.getNodeID();
 		logger.debug("In READSUCCESS Message Handler from "+ toNodeId);
 		

@@ -36,12 +36,11 @@ public class ReadMessageHandler implements MessageHandler<Message>{
 				ReentrantReadWriteLock  rwLock=fInfo.getReadWriteLock();
 				if(rwLock.readLock().tryLock())
 				{
-					//TODO: SEND Success message(Construct Success M<essage)
 					//1. Get Read Content
 					//2. Get clockVN, RU from FInfo
 					//3. Serialize clock form context
 					//4. use TCP client to send
-					//TODO: Preserve the state.
+					//Preserve the state.
 					String content="";
 					try {
 						content=Context.fsHandler.getFilesystem().read(fName);

@@ -11,13 +11,12 @@ public class DaemonApplication implements Application {
 	
 	@Override
 	public void runApplication() {
-		// TODO Auto-generated method stub
+		// TODO Implement Daemon Application
 
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
 

@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>edu.utdallas.aos.p3</groupId>
 			<artifactId>FileSystem</artifactId>
-			<version>0.0.3</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.http-client</groupId>
