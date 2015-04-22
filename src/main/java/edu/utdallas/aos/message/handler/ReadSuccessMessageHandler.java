@@ -1,7 +1,5 @@
 package edu.utdallas.aos.message.handler;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,14 +31,15 @@ public class ReadSuccessMessageHandler implements MessageHandler<Message> {
 			Integer RU 			= message.getRU();
 			String content		= message.getContent();
 			
-			if(message.getVN() > fInfo.getVersionNumber()){
-				try {
-					Context.fsHandler.getFilesystem().write(fileName, content);
-					fInfo.setVersionNumber(VN);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			//DO NOT UPDATE CONTENT AND RU 
+//			if(message.getVN() > fInfo.getVersionNumber()){
+//				try {
+//					Context.fsHandler.getFilesystem().write(fileName, content);
+//					fInfo.setVersionNumber(VN);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			
 			P Pi				= new P(id, VN, RU, content);
 			Pi.setCount(1);

@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.utdallas.aos.p3.filesystem.FileInfo;
+
 public class ReplicationClient {
 
 	static final Logger logger = LogManager.getLogger(ReplicationClient.class);
@@ -18,7 +20,10 @@ public class ReplicationClient {
 		
 		String content = "";
 		if (readQObtained) {
-			content = Context.fsHandler.getFilesystem().read(fileName);
+			FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
+			if(fInfo.getVersionNumber() < fInfo.getLatestVN()){
+				content = fInfo.getLatestContent();
+			}
 		}
 		return content;	
 

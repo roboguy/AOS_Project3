@@ -1,6 +1,5 @@
 package edu.utdallas.aos.message.handler;
 
-import java.io.IOException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,17 +27,17 @@ public class DoneReadMessageHandler implements MessageHandler<Message> {
 		synchronized (Context.lock) {
 			String fileName	= message.getFileName();
 			FileInfo fInfo 	= Context.fsHandler.getReplicatedFiles().get(fileName);
-			Integer versionNumber = message.getVN();
-			String content 	= message.getContent();
+//			Integer versionNumber = message.getVN();
+//			String content 	= message.getContent();
 			
-			if(versionNumber > fInfo.getVersionNumber()){
+//			if(versionNumber > fInfo.getVersionNumber()){
 				//This code shoud not run
-				try {
-					Context.fsHandler.getFilesystem().write(fileName, content);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+//				try {
+//					Context.fsHandler.getFilesystem().write(fileName, content);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			
 			ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
 			rwLock.readLock().unlock();

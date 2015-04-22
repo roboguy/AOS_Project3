@@ -54,13 +54,14 @@ public abstract class Operation {
 		if (fExists == null) {
 			throw new FileNotFoundException();
 		}
-
+		boolean quorumObtained = false;
 		synchronized (Context.lock) {
 			// Increment my entry in the vector clock to signal my readEvent.
 			String myID = Context.myInfo.getId().toString();
 			Context.clock.increment(myID);
+			quorumObtained = requestQuorum(fileName);
 		}
-		boolean quorumObtained = requestQuorum(fileName);
+		
 		
 		while(!quorumObtained){
 			exponentialBackOff();
@@ -73,6 +74,7 @@ public abstract class Operation {
 			} // SYNC Block ENDS
 
 			quorumObtained = requestQuorum(fileName);
+			
 		}//While Quorum not obtained
 		
 		return quorumObtained;
@@ -114,7 +116,7 @@ public abstract class Operation {
 				lockMessage.setClock(clock);
 				lockMessage.setContent(content);
 				lockMessage.setFileName(fileName);
-				lockMessage.setNodeID(Context.myInfo.getId().toString());
+				lockMessage.setNodeID(myID);
 				lockMessage.setRU(RU);
 				lockMessage.setVN(VN);
 				Iterator<Entry<Integer, Node>> iter = Context.nodeInfos.entrySet().iterator();

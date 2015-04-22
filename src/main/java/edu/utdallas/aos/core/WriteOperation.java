@@ -42,7 +42,7 @@ public class WriteOperation extends Operation {
 
 	@Override
 	protected FileInfo resetFlags(FileInfo fInfo) {
-		fInfo.setIsWriteLocked(true);
+		fInfo.setIsWriteLocked(false);
 		fInfo.resetQuorumCondition();
 		return fInfo;
 	}
