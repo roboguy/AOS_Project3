@@ -15,6 +15,7 @@ import java.util.Set;
 
 import edu.utdallas.aos.core.Context;
 import edu.utdallas.aos.core.ReplicationClient;
+import edu.utdallas.aos.p3.comm.Server;
 import edu.utdallas.aos.p3.filesystem.FileInfo;
 
 public class InteractiveApplication implements Application {
@@ -63,11 +64,35 @@ public class InteractiveApplication implements Application {
 			System.out.println("Exit");
 			break;
 		case "fail":
-			System.out.println("Processing Node failure");
+			System.out.println("Processing Node failure, Node will be down for 60 seconds.");
+			processFail();
 			break;
 		default:
 			System.out.println("Invalid command entered, please try again.");
 			break;
+		}
+	}
+
+	private void processFail() {
+		Thread fail	= new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				Server.isFailed = true;
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Server.isFailed = false;
+				System.out.println("Server Recovered");
+			}
+		});
+		fail.start();
+		try {
+			fail.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 

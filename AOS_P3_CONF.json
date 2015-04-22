@@ -4,14 +4,14 @@
     {
       "id": 0,
       "host": "localhost",
-      "port": "50000"
+      "port": "50002"
     }
   ],
   "params": {
     "exp_Backoff_min": 30000,
     "exp_Backoff_max": 60000,
-    "read_operation_percent": 80
+    "read_operation_percent": 50
   },
-  "total_Number_Of_Requests": 5,
+  "total_Number_Of_Requests": 100,
   "mean_Consecutive_Request_Delay": 50
 } 

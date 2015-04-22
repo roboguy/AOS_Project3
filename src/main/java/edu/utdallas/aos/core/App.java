@@ -107,8 +107,7 @@ public class App {
 		TCPServerThread.setPort(portNum);
 		
 		
-		Application application = ApplicationFactory.getApplication(arguments
-				.getMode());
+		Application application = ApplicationFactory.getApplication(arguments.getMode());
 		application.setNumberOfRequests(conf.getTotalNumberOfRequests());
 		application.setReadPercent(conf.getParams().getReadOperationPercent());
 		application.setReplicationClient(new ReplicationClient());

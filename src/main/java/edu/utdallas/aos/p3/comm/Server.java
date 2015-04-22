@@ -101,7 +101,10 @@ public class Server extends Thread {
 					Context.clock.increment(message.getNodeID());
 				}
 				
-				
+				if(isFailed){
+					logger.debug("SERVER DOWN. IGNORING REQUEST.");
+					break;
+				}
 				if(messageType.equals("READ")){
 					new ReadMessageHandler().handleMessage(message);
 				} else if (messageType.equals("WRITE")){
