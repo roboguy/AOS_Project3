@@ -62,7 +62,7 @@ public class ReadMessageHandler implements MessageHandler<Message>{
 					readSuccessMessage.setRU(RU);
 					readSuccessMessage.setVN(VN);
 					readSuccessMessage.setNodeID(Context.myInfo.getId().toString());
-					Node toNode=Context.nodeInfos.get(toNodeId);
+					Node toNode=Context.nodeInfos.get(Integer.parseInt(toNodeId));
 					Integer port= Integer.parseInt(toNode.getPort());
 					String hostName = toNode.getHost();
 					try {

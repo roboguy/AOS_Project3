@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import edu.utdallas.aos.core.Context;
 import edu.utdallas.aos.message.Message;
+import edu.utdallas.aos.message.ReadMessage;
 import edu.utdallas.aos.message.handler.DoneReadMessageHandler;
 import edu.utdallas.aos.message.handler.DoneWriteMessageHandler;
 import edu.utdallas.aos.message.handler.ReadMessageHandler;
@@ -91,9 +92,15 @@ public class Server extends Thread {
 
 				//Handle Message String
 				String messageStr 	= sb.toString();
-				Message message 	= serverGson.fromJson(messageStr, Message.class);
-				String messageType 	= message.getType();
-				
+				Message message 		= null;
+				if(messageStr.contains("\"READ\"")){
+					message = serverGson.fromJson(messageStr, ReadMessage.class);
+				} else if(messageStr.contains("\"READSUCCESS\"")){
+					message = serverGson.fromJson(messageStr, ReadMessage.class);
+				}else if(messageStr.contains("\"DONEREAD\"")){
+					message = serverGson.fromJson(messageStr, ReadMessage.class);
+				}
+				String messageType = message.getType();
 				VectorClock msgClk	= VectorClock.deserializeClock(message);
 				
 				synchronized (Context.lock) {
