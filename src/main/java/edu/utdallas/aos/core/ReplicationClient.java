@@ -45,7 +45,7 @@ public class ReplicationClient {
 	}
 	
 	public void writeUnlockFile(String fileName){
-		Operation writeUnlock = new ReadOperation();
+		Operation writeUnlock = new WriteOperation();
 		writeUnlock.unlockFile(fileName);
 	}//Write Unlock ENDS
 

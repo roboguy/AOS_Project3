@@ -21,7 +21,7 @@ public class ReadOperation extends Operation {
 
 	@Override
 	protected FileInfo setFlags(FileInfo fInfo) {
-		System.out.println("LOCAL READ LOCK ACQUIRED");
+		//System.out.println("LOCAL READ LOCK ACQUIRED");
 		fInfo.setIsReadLocked(true);
 		return fInfo;
 	}
@@ -52,6 +52,11 @@ public class ReadOperation extends Operation {
 		fInfo.setIsReadLocked(false);
 		fInfo.resetQuorumCondition();
 		return fInfo;
+	}
+
+	@Override
+	protected String getOperation() {
+		return "READ";
 	}
 
 }

@@ -17,7 +17,7 @@ public class WriteOperation extends Operation {
 
 	@Override
 	protected FileInfo setFlags(FileInfo fInfo) {
-		System.out.println("LOCAL WRITE LOCK ACQUIRED");
+		//System.out.println("LOCAL WRITE LOCK ACQUIRED");
 		fInfo.setIsWriteLocked(true);
 		return fInfo;
 	}
@@ -50,12 +50,17 @@ public class WriteOperation extends Operation {
 	@Override
 	protected ReentrantReadWriteLock unlockLock(ReentrantReadWriteLock rwLock) {
 		rwLock.writeLock().unlock();
-		return null;
+		return rwLock;
 	}
 
 	@Override
 	protected Message getDoneMessage() {
 		return new DoneWriteMessage();
+	}
+
+	@Override
+	protected String getOperation() {
+		return "WRITE";
 	}
 
 }

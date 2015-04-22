@@ -171,11 +171,10 @@ public abstract class Operation {
 			
 			try {
 				PrintWriter out = new PrintWriter(new BufferedWriter(
-						new FileWriter("testClocks/" + fileName + ".clock",
-								true)));
+						new FileWriter("testClocks/" + fileName + ".clock",	true)));
 				StringBuilder sb = new StringBuilder();
 				sb.append(VectorClock.serializeClock(Context.clock) + "::");
-				sb.append("READ");
+				sb.append(getOperation());
 				out.println(sb.toString());
 				out.close();
 			} catch (IOException e1) {
@@ -234,6 +233,8 @@ public abstract class Operation {
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 		}//Sync Block ENDS
 	}
+
+	protected abstract String getOperation();
 
 	private void exponentialBackOff() {
 		
