@@ -55,7 +55,7 @@ public class WriteMessageHandler implements MessageHandler<Message>{
 				writeSuccessMsg.setRU(RU);
 				writeSuccessMsg.setVN(VN);
 				writeSuccessMsg.setNodeID(Context.myInfo.getId().toString());
-				Node toNode		= Context.nodeInfos.get(toNodeId);
+				Node toNode		= Context.nodeInfos.get(Integer.parseInt(toNodeId));
 				Integer port	= Integer.parseInt(toNode.getPort());
 				String hostName = toNode.getHost();
 				

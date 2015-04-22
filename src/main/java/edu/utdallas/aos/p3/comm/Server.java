@@ -14,8 +14,13 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 
 import edu.utdallas.aos.core.Context;
+import edu.utdallas.aos.message.DoneReadMessage;
+import edu.utdallas.aos.message.DoneWriteMessage;
 import edu.utdallas.aos.message.Message;
 import edu.utdallas.aos.message.ReadMessage;
+import edu.utdallas.aos.message.ReadSuccessMessage;
+import edu.utdallas.aos.message.WriteMessage;
+import edu.utdallas.aos.message.WriteSuccessMessage;
 import edu.utdallas.aos.message.handler.DoneReadMessageHandler;
 import edu.utdallas.aos.message.handler.DoneWriteMessageHandler;
 import edu.utdallas.aos.message.handler.ReadMessageHandler;
@@ -91,15 +96,22 @@ public class Server extends Thread {
 				logger.debug("Started Request Handler to handle request.");
 
 				//Handle Message String
-				String messageStr 	= sb.toString();
+				String messageStr 		= sb.toString();
 				Message message 		= null;
 				if(messageStr.contains("\"READ\"")){
 					message = serverGson.fromJson(messageStr, ReadMessage.class);
 				} else if(messageStr.contains("\"READSUCCESS\"")){
-					message = serverGson.fromJson(messageStr, ReadMessage.class);
+					message = serverGson.fromJson(messageStr, ReadSuccessMessage.class);
 				}else if(messageStr.contains("\"DONEREAD\"")){
-					message = serverGson.fromJson(messageStr, ReadMessage.class);
+					message = serverGson.fromJson(messageStr, DoneReadMessage.class);
+				}else if(messageStr.contains("\"WRITE\"")){
+					message = serverGson.fromJson(messageStr, WriteMessage.class);
+				}else if(messageStr.contains("\"WRITESUCCESS\"")){
+					message = serverGson.fromJson(messageStr, WriteSuccessMessage.class);
+				}else if(messageStr.contains("\"DONEWRITE\"")){
+					message = serverGson.fromJson(messageStr, DoneWriteMessage.class);
 				}
+				
 				String messageType = message.getType();
 				VectorClock msgClk	= VectorClock.deserializeClock(message);
 				
@@ -127,6 +139,7 @@ public class Server extends Thread {
 				} else {
 					logger.error("Unable to handle unkown message type");
 				}
+				
 			}//While Server is Running ENDS
 
 		}//Try Block ENDS
