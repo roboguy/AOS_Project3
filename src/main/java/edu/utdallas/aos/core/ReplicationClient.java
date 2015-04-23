@@ -23,6 +23,8 @@ public class ReplicationClient {
 			FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
 			if(fInfo.getVersionNumber() < fInfo.getLatestVN()){
 				content = fInfo.getLatestContent();
+			} else {
+				content = Context.fsHandler.getFilesystem().read(fileName);
 			}
 		}
 		return content;	
