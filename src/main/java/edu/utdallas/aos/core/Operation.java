@@ -210,7 +210,7 @@ public abstract class Operation {
 
 				// Dont send done message to myself
 				if (key.equals(myID)) {
-					break;
+					continue;
 				}
 				P pi = entry.getValue();
 				String ID = pi.getNodeID();
@@ -247,7 +247,7 @@ public abstract class Operation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		logger.debug("Backoff for " + backoffDuration);
 		if (backoffDuration > Context.backoff.getMaxIntervalMillis()) {
 			Context.backoff.reset();
 		}

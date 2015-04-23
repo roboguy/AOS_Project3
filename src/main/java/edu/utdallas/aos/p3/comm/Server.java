@@ -114,6 +114,7 @@ public class Server extends Thread {
 				
 				String messageType = message.getType();
 				VectorClock msgClk	= VectorClock.deserializeClock(message);
+				logger.debug(messageStr);
 				
 				synchronized (Context.lock) {
 					Context.clock = Context.clock.merge(msgClk);
