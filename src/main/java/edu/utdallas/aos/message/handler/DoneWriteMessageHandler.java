@@ -25,9 +25,12 @@ public class DoneWriteMessageHandler implements MessageHandler<Message> {
 			String content 	= message.getContent();
 			
 			if(versionNumber > fInfo.getVersionNumber()){
-				//This code shoud not run
 				try {
+					logger.debug("Updating content");
 					Context.fsHandler.getFilesystem().write(fileName, content);
+					//Update Version number from message
+					fInfo.setVersionNumber(versionNumber);
+					logger.debug("Updated VN to " + versionNumber);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

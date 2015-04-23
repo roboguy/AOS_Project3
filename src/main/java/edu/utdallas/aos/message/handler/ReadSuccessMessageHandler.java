@@ -43,7 +43,7 @@ public class ReadSuccessMessageHandler implements MessageHandler<Message> {
 			
 			P Pi				= new P(id, VN, RU, content);
 			Pi.setCount(1);
-			
+			logger.debug("Received Read Success from " + Pi.getNodeID());
 			boolean contains 	= fInfo.getP().containsKey(id);
 			
 			if(contains){
@@ -57,6 +57,7 @@ public class ReadSuccessMessageHandler implements MessageHandler<Message> {
 			}
 			
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
+			logger.debug("UPDATED P");
 		}//SYNC Block ENDS
 		
 	}//handleMessage ENDS
