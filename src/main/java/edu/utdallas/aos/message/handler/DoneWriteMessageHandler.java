@@ -17,7 +17,7 @@ public class DoneWriteMessageHandler implements MessageHandler<Message> {
 	
 	@Override
 	public void handleMessage(Message message) {
-		logger.debug("In DONEREAD Message Handler from "+ message.getNodeID());
+		logger.debug("In DONEWRITE Message Handler from "+ message.getNodeID());
 		synchronized (Context.lock) {
 			String fileName	= message.getFileName();
 			FileInfo fInfo 	= Context.fsHandler.getReplicatedFiles().get(fileName);

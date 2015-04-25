@@ -8,8 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.LogManager;
@@ -94,12 +94,13 @@ public abstract class Operation {
 			} catch (FileNotFoundException | NoSuchElementException e1) {
 				e1.printStackTrace();
 			}
-			P myP = new P(myID, fInfo.getVersionNumber(), fInfo.getReplicasUpdated(), content);
-			fInfo.getP().put(myID, myP);
+			
 			ContainsLock container 	= getLock(rwLock);
 			boolean lockAcquired 	= container.isLockAcquired();
 			rwLock 					= container.getRwLock();
 			if(lockAcquired){
+				P myP = new P(myID, fInfo.getVersionNumber(), fInfo.getReplicasUpdated(), content);
+				fInfo.getP().put(myID, myP);
 				fInfo = setFlags(fInfo);
 				String clock = VectorClock.serializeClock(Context.clock);
 				Integer VN = fInfo.getVersionNumber();
