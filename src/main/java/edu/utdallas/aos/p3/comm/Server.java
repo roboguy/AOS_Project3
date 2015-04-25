@@ -123,7 +123,7 @@ public class Server extends Thread {
 				
 				if(isFailed){
 					logger.debug("SERVER DOWN. IGNORING REQUEST.");
-					break;
+					continue;
 				}
 				if(messageType.equals("READ")){
 					new ReadMessageHandler().handleMessage(message);

@@ -199,7 +199,7 @@ public abstract class Operation {
 				e.printStackTrace();
 			}
 			doneMsg.setClock(clock);
-			doneMsg.setContent(content);
+			doneMsg.setContent(content); 
 			doneMsg.setFileName(fileName);
 			doneMsg.setNodeID(myID);
 			doneMsg.setRU(RU);
