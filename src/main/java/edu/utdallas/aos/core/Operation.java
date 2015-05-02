@@ -31,6 +31,8 @@ public abstract class Operation {
 	
 	protected abstract Message getMessage(); 
 	
+	protected abstract String getOperation();
+	
 	protected abstract FileInfo setFlags(FileInfo fInfo);
 
 	protected abstract ContainsLock getLock(ReentrantReadWriteLock rwLock);
@@ -64,15 +66,21 @@ public abstract class Operation {
 		
 		
 		while(!quorumObtained){
-			exponentialBackOff();
 			synchronized (Context.lock) {
 				FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
-				if (fInfo.quorumObtained(Context.DU, Context.fsHandler,	fileName)) {
+				if (fInfo.quorumObtained(Context.DU)) {
 					quorumObtained = true;
 					break;
+				} else {
+					//unlock my lock and try again
+					ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
+					rwLock = unlockLock(rwLock);
+					fInfo.setReadWriteLock(rwLock);
+					Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
+					abortRequest(fileName);
 				}
 			} // SYNC Block ENDS
-
+			exponentialBackOff();
 			quorumObtained = requestQuorum(fileName);
 			
 		}//While Quorum not obtained
@@ -237,9 +245,52 @@ public abstract class Operation {
 		}//Sync Block ENDS
 	}
 
-	protected abstract String getOperation();
+	public void abortRequest(String fileName){
+		
+		synchronized (Context.lock) {
+			
+			FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
+			String myID = Context.myInfo.getId().toString();
+			
+			Message abortMsg = getAbortMessage();
+			abortMsg.setFileName(fileName);
+			abortMsg.setNodeID(myID);
+			
+			for (Entry<String, P> entry : fInfo.getP().entrySet()) {
+				String key = entry.getKey();
 
-	private void exponentialBackOff() {
+				// Dont send done message to myself
+				if (key.equals(myID)) {
+					continue;
+				}
+				P pi = entry.getValue();
+				String ID = pi.getNodeID();
+				Node node = Context.nodeInfos.get(Integer.parseInt(ID));
+				String hostName = node.getHost();
+				Integer port = Integer.parseInt(node.getPort());
+				Integer count = pi.getCount();
+
+				for (int i = 1; i <= count; i++) {
+					try {
+						TCPClient.sendMessage(abortMsg, hostName, port, ID);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}// For every time we received lock message from this node ends
+
+			}// For each Pi in P we send done read message to unlock
+			
+			fInfo = resetFlags(fInfo);
+			//fInfo.setReadWriteLock(rwLock);
+			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
+		}
+		
+		
+	}
+
+	protected abstract Message getAbortMessage();
+	
+ 	private void exponentialBackOff() {
 		
 		// Exponential Backoff
 		long backoffDuration = 50;

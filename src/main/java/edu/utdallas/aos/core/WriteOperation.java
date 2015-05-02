@@ -2,6 +2,7 @@ package edu.utdallas.aos.core;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import edu.utdallas.aos.message.AbortWriteMessage;
 import edu.utdallas.aos.message.DoneWriteMessage;
 import edu.utdallas.aos.message.Message;
 import edu.utdallas.aos.message.WriteMessage;
@@ -61,6 +62,11 @@ public class WriteOperation extends Operation {
 	@Override
 	protected String getOperation() {
 		return "WRITE";
+	}
+
+	@Override
+	protected Message getAbortMessage() {
+		return new AbortWriteMessage();
 	}
 
 }

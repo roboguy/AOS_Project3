@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 
 import edu.utdallas.aos.core.Context;
+import edu.utdallas.aos.message.AbortReadMessage;
+import edu.utdallas.aos.message.AbortWriteMessage;
 import edu.utdallas.aos.message.DoneReadMessage;
 import edu.utdallas.aos.message.DoneWriteMessage;
 import edu.utdallas.aos.message.Message;
@@ -21,6 +23,8 @@ import edu.utdallas.aos.message.ReadMessage;
 import edu.utdallas.aos.message.ReadSuccessMessage;
 import edu.utdallas.aos.message.WriteMessage;
 import edu.utdallas.aos.message.WriteSuccessMessage;
+import edu.utdallas.aos.message.handler.AbortReadMessageHandler;
+import edu.utdallas.aos.message.handler.AbortWriteMessageHandler;
 import edu.utdallas.aos.message.handler.DoneReadMessageHandler;
 import edu.utdallas.aos.message.handler.DoneWriteMessageHandler;
 import edu.utdallas.aos.message.handler.ReadMessageHandler;
@@ -110,6 +114,10 @@ public class Server extends Thread {
 					message = serverGson.fromJson(messageStr, WriteSuccessMessage.class);
 				}else if(messageStr.contains("\"DONEWRITE\"")){
 					message = serverGson.fromJson(messageStr, DoneWriteMessage.class);
+				}else if(messageStr.contains("\"ABORTWRITE\"")){
+					message = serverGson.fromJson(messageStr, AbortWriteMessage.class);
+				}else if(messageStr.contains("\"ABORTREAD\"")){
+					message = serverGson.fromJson(messageStr, AbortReadMessage.class);
 				}
 				
 				String messageType = message.getType();
@@ -137,7 +145,11 @@ public class Server extends Thread {
 					new DoneReadMessageHandler().handleMessage(message);
 				} else if (messageType.equals("DONEWRITE")){
 					new DoneWriteMessageHandler().handleMessage(message);
-				} else {
+				}else if (messageType.equals("ABORTREAD")){ 
+					new AbortReadMessageHandler().handleMessage(message);
+				}else if (messageType.equals("ABORTWRITE")){
+					new AbortWriteMessageHandler().handleMessage(message);
+				}else {
 					logger.error("Unable to handle unkown message type");
 				}
 				

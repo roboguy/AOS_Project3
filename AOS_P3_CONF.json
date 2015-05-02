@@ -3,25 +3,25 @@
   "nodes": [
     {
       "id": 0,
-      "host": "192.168.0.8",
+      "host": "192.168.0.105",
       "port": "50002"
     },
     {
       "id": 1,
-      "host": "192.168.0.29",
+      "host": "192.168.0.253",
       "port": "50002"
     },
     {
       "id": 2,
-      "host": "192.168.0.30",
+      "host": "192.168.0.252",
       "port": "50002"
     }
   ],
   "params": {
-    "exp_Backoff_min": 500,
-    "exp_Backoff_max": 1000,
+    "exp_Backoff_min": 50,
+    "exp_Backoff_max": 100,
     "read_operation_percent": 80
   },
-  "total_Number_Of_Requests": 10,
+  "total_Number_Of_Requests": 100,
   "mean_Consecutive_Request_Delay": 50
 } 
