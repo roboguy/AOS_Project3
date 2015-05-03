@@ -67,12 +67,18 @@ public abstract class Operation {
 			quorumObtained = requestQuorum(fileName);
 		}
 		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		while(!quorumObtained){
 			synchronized (Context.lock) {
 				FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
 				if (fInfo.quorumObtained(Context.DU)) {
 					quorumObtained = true;
+					//TODO add logging here
 					break;
 				} else {
 					//unlock my lock and try again
@@ -163,11 +169,7 @@ public abstract class Operation {
 			fInfo.setReadWriteLock(rwLock);
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 		}//Sync Block ENDS
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+
 		return false;
 	}
 
