@@ -65,4 +65,11 @@ public class ReadOperation extends Operation {
 		return new AbortReadMessage();
 	}
 
+	@Override
+	protected boolean isLocked(String fileName) {
+		FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
+		boolean locked = fInfo.getIsReadLocked();
+		return locked;
+	}
+
 }

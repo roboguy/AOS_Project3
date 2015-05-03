@@ -69,4 +69,11 @@ public class WriteOperation extends Operation {
 		return new AbortWriteMessage();
 	}
 
+	@Override
+	protected boolean isLocked(String fileName) {
+		FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
+		boolean locked = fInfo.getIsWriteLocked();
+		return locked;
+	}
+
 }

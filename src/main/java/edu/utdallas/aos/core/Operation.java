@@ -45,6 +45,9 @@ public abstract class Operation {
 
 	protected abstract Message getDoneMessage();
 	
+	protected abstract boolean isLocked(String fileName);
+	
+	
 	/*
 	 * Concrete Methods
 	 */
@@ -73,10 +76,12 @@ public abstract class Operation {
 					break;
 				} else {
 					//unlock my lock and try again
-					ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
-					rwLock = unlockLock(rwLock);
-					fInfo.setReadWriteLock(rwLock);
-					Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
+					if(isLocked(fileName)){
+						ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
+						rwLock = unlockLock(rwLock);
+						fInfo.setReadWriteLock(rwLock);
+						Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
+					}
 					abortRequest(fileName);
 				}
 			} // SYNC Block ENDS
