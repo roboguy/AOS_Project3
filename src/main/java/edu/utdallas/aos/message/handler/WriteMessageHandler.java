@@ -5,7 +5,6 @@ import info.siyer.aos.clock.VectorClock;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,11 +30,9 @@ public class WriteMessageHandler implements MessageHandler<Message>{
 			String fName	= message.getFileName();
 			FileInfo fInfo 	= Context.fsHandler.getReplicatedFiles().get(fName);
 			ReentrantReadWriteLock  rwLock	= fInfo.getReadWriteLock();
-			try {
-				gotWriteLock = rwLock.writeLock().tryLock(50, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+
+			gotWriteLock = rwLock.writeLock().tryLock();
+
 			if(gotWriteLock){
 				String content="";
 				try {
