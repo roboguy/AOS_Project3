@@ -118,10 +118,15 @@ public class Server extends Thread {
 					message = serverGson.fromJson(messageStr, AbortWriteMessage.class);
 				}else if(messageStr.contains("\"ABORTREAD\"")){
 					message = serverGson.fromJson(messageStr, AbortReadMessage.class);
+				} else {
+					logger.error("Could not determine message type, Aborting");
+					continue;
 				}
 				
 				String messageType = message.getType();
+				logger.debug(messageType);
 				VectorClock msgClk = null;
+				logger.debug(message.getClock());
 				if(!message.getClock().isEmpty() || message.getClock() != null){
 					 msgClk	= VectorClock.deserializeClock(message);
 				}
