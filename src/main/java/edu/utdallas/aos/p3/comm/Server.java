@@ -127,7 +127,7 @@ public class Server extends Thread {
 				logger.debug(messageType);
 				VectorClock msgClk = null;
 				logger.debug(message.getClock());
-				if(!message.getClock().isEmpty() || message.getClock() != null){
+				if(message.getClock() != null || !message.getClock().isEmpty()){
 					 msgClk	= VectorClock.deserializeClock(message);
 				}
 					
