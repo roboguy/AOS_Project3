@@ -18,8 +18,8 @@
     }
   ],
   "params": {
-    "exp_Backoff_min": 8000,
-    "exp_Backoff_max": 10000,
+    "exp_Backoff_min": 800,
+    "exp_Backoff_max": 1000,
     "read_operation_percent": 80
   },
   "total_Number_Of_Requests": 100,

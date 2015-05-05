@@ -127,16 +127,18 @@ public class Server extends Thread {
 				logger.debug(messageType);
 				VectorClock msgClk = null;
 				logger.debug(message.getClock());
-				if(message.getClock() != null || !message.getClock().isEmpty()){
+
+				if(message.getClock() != null){
 					 msgClk	= VectorClock.deserializeClock(message);
+					 synchronized (Context.lock) {
+							Context.clock = Context.clock.merge(msgClk);
+							Context.clock.increment(message.getNodeID());
+						}
+				} else {
+					logger.debug("Did not find clock");
 				}
 					
 				logger.debug(messageStr);
-				
-				synchronized (Context.lock) {
-					Context.clock = Context.clock.merge(msgClk);
-					Context.clock.increment(message.getNodeID());
-				}
 				
 				if(isFailed){
 					logger.debug("SERVER DOWN. IGNORING REQUEST.");
