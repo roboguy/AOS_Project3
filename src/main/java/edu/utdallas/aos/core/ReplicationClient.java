@@ -26,6 +26,8 @@ public class ReplicationClient {
 			} else {
 				content = Context.fsHandler.getFilesystem().read(fileName);
 			}
+		} else {
+			logger.debug("OPERATION ABORTED");
 		}
 		return content;	
 
@@ -48,6 +50,8 @@ public class ReplicationClient {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else {
+			logger.debug("OPERATION ABORTED");
 		}
 	}
 	

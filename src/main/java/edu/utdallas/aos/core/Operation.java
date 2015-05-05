@@ -73,7 +73,8 @@ public abstract class Operation {
 			e.printStackTrace();
 		}
 		
-		while(!quorumObtained){
+		//while(!quorumObtained){
+		for(int count = 0; count < 10; count++){
 			synchronized (Context.lock) {
 				FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
 				if (fInfo.quorumObtained(Context.DU)) {
