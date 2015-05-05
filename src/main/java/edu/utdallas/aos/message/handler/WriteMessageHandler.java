@@ -5,7 +5,7 @@ import info.siyer.aos.clock.VectorClock;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,9 +29,9 @@ public class WriteMessageHandler implements MessageHandler<Message>{
 			boolean gotWriteLock = false;
 			String fName	= message.getFileName();
 			FileInfo fInfo 	= Context.fsHandler.getReplicatedFiles().get(fName);
-			ReentrantReadWriteLock  rwLock	= fInfo.getReadWriteLock();
+			Semaphore  rwLock	= fInfo.getFileSemaphore();
 
-			gotWriteLock = rwLock.writeLock().tryLock();
+			gotWriteLock = rwLock.tryAcquire(10);
 
 			if(gotWriteLock){
 				String content="";
@@ -62,7 +62,7 @@ public class WriteMessageHandler implements MessageHandler<Message>{
 					logger.error("Unable to send message to Node: "+toNodeId);
 					e.printStackTrace();
 				}
-				fInfo.setReadWriteLock(rwLock);
+				fInfo.setFileSemaphore(rwLock);
 				Context.fsHandler.getReplicatedFiles().put(fName, fInfo);
 				
 			}//If gotWriteLock ENDS

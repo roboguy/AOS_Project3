@@ -127,7 +127,7 @@ public class App {
 
 		// Waiting 3 seconds for server to initialize.
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(30000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

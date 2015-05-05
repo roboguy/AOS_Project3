@@ -1,6 +1,6 @@
 package edu.utdallas.aos.message.handler;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +20,8 @@ public class AbortWriteMessageHandler implements MessageHandler<Message>{
 			String fileName	= message.getFileName();
 			FileInfo fInfo 	= Context.fsHandler.getReplicatedFiles().get(fileName);
 			
-			ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
-			rwLock.writeLock().unlock();
+			Semaphore rwLock = fInfo.getFileSemaphore();
+			rwLock.release(10);
 			fInfo.setIsWriteLocked(false);
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 		}

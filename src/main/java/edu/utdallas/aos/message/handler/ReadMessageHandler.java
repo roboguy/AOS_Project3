@@ -5,7 +5,7 @@ import info.siyer.aos.clock.VectorClock;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,8 +33,8 @@ public class ReadMessageHandler implements MessageHandler<Message>{
 				String fName 	= message.getFileName();
 				FileInfo fInfo	= Context.fsHandler.getReplicatedFiles().get(fName);
 				
-				ReentrantReadWriteLock  rwLock=fInfo.getReadWriteLock();
-				if(rwLock.readLock().tryLock())
+				Semaphore  rwLock=fInfo.getFileSemaphore();
+				if(rwLock.tryAcquire())
 				{
 					//1. Get Read Content
 					//2. Get clockVN, RU from FInfo
@@ -71,7 +71,7 @@ public class ReadMessageHandler implements MessageHandler<Message>{
 						logger.error("Unable to send message to Node: "+toNodeId);
 						e.printStackTrace();
 					}
-					fInfo.setReadWriteLock(rwLock);
+					fInfo.setFileSemaphore(rwLock);
 					Context.fsHandler.getReplicatedFiles().put(fName, fInfo);
 				}
 				//No else was required since that is the case of abort.

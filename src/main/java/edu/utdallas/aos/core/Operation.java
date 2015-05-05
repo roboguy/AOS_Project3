@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,13 +35,13 @@ public abstract class Operation {
 	
 	protected abstract FileInfo setFlags(FileInfo fInfo);
 
-	protected abstract ContainsLock getLock(ReentrantReadWriteLock rwLock);
+	protected abstract ContainsLock getLock(Semaphore rwLock);
 	
 	protected abstract FileInfo updateVersion(FileInfo fInfo);
 	
 	protected abstract FileInfo resetFlags(FileInfo fInfo);
 
-	protected abstract ReentrantReadWriteLock unlockLock(ReentrantReadWriteLock rwLock);
+	protected abstract Semaphore unlockLock(Semaphore rwLock);
 
 	protected abstract Message getDoneMessage();
 	
@@ -83,9 +83,9 @@ public abstract class Operation {
 				} else {
 					//unlock my lock and try again
 					if(isLocked(fileName)){
-						ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
-						rwLock = unlockLock(rwLock);
-						fInfo.setReadWriteLock(rwLock);
+						Semaphore fileSemaphore = fInfo.getFileSemaphore();
+						fileSemaphore = unlockLock(fileSemaphore);
+						fInfo.setFileSemaphore(fileSemaphore);
 						Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 					}
 					abortRequest(fileName);
@@ -106,7 +106,8 @@ public abstract class Operation {
 			String myID = Context.myInfo.getId().toString();
 
 			FileInfo fInfo = Context.fsHandler.getReplicatedFiles().get(fileName);
-			ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
+			//ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
+			Semaphore fileSemaphore = fInfo.getFileSemaphore();
 			String content = "";
 			try {
 				content = Context.fsHandler.getFilesystem().read(fileName);
@@ -114,9 +115,9 @@ public abstract class Operation {
 				e1.printStackTrace();
 			}
 			
-			ContainsLock container 	= getLock(rwLock);
+			ContainsLock container 	= getLock(fileSemaphore);
 			boolean lockAcquired 	= container.isLockAcquired();
-			rwLock 					= container.getRwLock();
+			fileSemaphore			= container.getRwLock();
 			if(lockAcquired){
 				P myP = new P(myID, fInfo.getVersionNumber(), fInfo.getReplicasUpdated(), content);
 				fInfo.getP().put(myID, myP);
@@ -166,7 +167,7 @@ public abstract class Operation {
 			else {
 				return false;
 			}
-			fInfo.setReadWriteLock(rwLock);
+			fInfo.setFileSemaphore(fileSemaphore);
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 		}//Sync Block ENDS
 
@@ -244,10 +245,10 @@ public abstract class Operation {
 				}// For every time we received lock message from this node ends
 
 			}// For each Pi in P we send done read message to unlock
-			ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
-			rwLock = unlockLock(rwLock);
+			Semaphore fSemaphore = fInfo.getFileSemaphore();
+			fSemaphore = unlockLock(fSemaphore);
 			fInfo = resetFlags(fInfo);
-			fInfo.setReadWriteLock(rwLock);
+			fInfo.setFileSemaphore(fSemaphore);
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 		}//Sync Block ENDS
 	}

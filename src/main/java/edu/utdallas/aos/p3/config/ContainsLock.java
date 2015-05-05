@@ -1,16 +1,16 @@
 package edu.utdallas.aos.p3.config;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 public class ContainsLock {
-	ReentrantReadWriteLock rwLock = null;
+	Semaphore fileSemaphore = null;
 	boolean lockAcquired = false;
 	
-	public ReentrantReadWriteLock getRwLock() {
-		return rwLock;
+	public Semaphore getRwLock() {
+		return fileSemaphore;
 	}
-	public void setRwLock(ReentrantReadWriteLock rwLock) {
-		this.rwLock = rwLock;
+	public void setRwLock(Semaphore rwLock) {
+		this.fileSemaphore = rwLock;
 	}
 	public boolean isLockAcquired() {
 		return lockAcquired;

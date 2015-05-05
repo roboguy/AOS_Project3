@@ -1,6 +1,6 @@
 package edu.utdallas.aos.message.handler;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,11 +39,11 @@ public class DoneReadMessageHandler implements MessageHandler<Message> {
 //				}
 //			}
 			
-			ReentrantReadWriteLock rwLock = fInfo.getReadWriteLock();
-			rwLock.readLock().unlock();
+			Semaphore rwLock = fInfo.getFileSemaphore();
+			rwLock.release();
 			fInfo.setIsReadLocked(false);
 			
-			fInfo.setReadWriteLock(rwLock);
+			fInfo.setFileSemaphore(rwLock);
 			Context.fsHandler.getReplicatedFiles().put(fileName, fInfo);
 		}
 		

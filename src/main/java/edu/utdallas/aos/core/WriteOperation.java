@@ -1,6 +1,6 @@
 package edu.utdallas.aos.core;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.Semaphore;
 
 import edu.utdallas.aos.message.AbortWriteMessage;
 import edu.utdallas.aos.message.DoneWriteMessage;
@@ -24,11 +24,11 @@ public class WriteOperation extends Operation {
 	}
 
 	@Override
-	protected ContainsLock getLock(ReentrantReadWriteLock rwLock) {
-		boolean localLockAcquired = rwLock.writeLock().tryLock();
+	protected ContainsLock getLock(Semaphore fileSemaphore) {
+		boolean localLockAcquired = fileSemaphore.tryAcquire(10);
 		ContainsLock container = new ContainsLock();
 		container.setLockAcquired(localLockAcquired);
-		container.setRwLock(rwLock);
+		container.setRwLock(fileSemaphore);
 		return container;
 	}
 
@@ -49,9 +49,9 @@ public class WriteOperation extends Operation {
 	}
 
 	@Override
-	protected ReentrantReadWriteLock unlockLock(ReentrantReadWriteLock rwLock) {
-		rwLock.writeLock().unlock();
-		return rwLock;
+	protected Semaphore unlockLock(Semaphore fileSemaphore) {
+		fileSemaphore.release(10);
+		return fileSemaphore;
 	}
 
 	@Override
