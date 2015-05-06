@@ -1,12 +1,7 @@
 package edu.utdallas.aos.application;
 
-import info.siyer.aos.clock.VectorClock;
-
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -14,6 +9,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import edu.utdallas.aos.core.Context;
+import edu.utdallas.aos.core.OpContainer;
 import edu.utdallas.aos.core.ReplicationClient;
 import edu.utdallas.aos.p3.comm.Server;
 import edu.utdallas.aos.p3.filesystem.FileInfo;
@@ -107,45 +103,50 @@ public class InteractiveApplication implements Application {
 		System.out.println("> Enter Content");
 		System.out.print("$ ");
 		String newContent = inputScanner2.nextLine();
+		OpContainer container = null;
 		try {
-			replicationClient.writeFile(fileName, newContent);
+			container = replicationClient.writeFile(fileName, newContent);
 			
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
-			
-			StringBuilder sb = new StringBuilder();
-			sb.append(Context.myInfo.getId() + "::");
-			sb.append(VectorClock.serializeClock(Context.clock) +"::");
-			out.print(sb.toString());
-			out.close();
+//			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
+//			
+//			StringBuilder sb = new StringBuilder();
+//			sb.append(Context.myInfo.getId() + "::");
+//			sb.append(VectorClock.serializeClock(Context.clock) +"::");
+//			out.print(sb.toString());
+//			out.close();
 		} catch (IOException e) {
 			System.out.println("Unable to write content to file.");
 		} finally {
-			replicationClient.writeUnlockFile(fileName);
+			if(container.isQuorumObtained()){
+				replicationClient.writeUnlockFile(fileName);
+			}
+			
 		}
 	}
 
 	private void processRead(String fileName) {
 		//System.out.println("Reading filename " + fileName);
-		
+		OpContainer container = null;
 		try {
-			System.out.println(replicationClient.readFile(fileName));
-			
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
-			
-			StringBuilder sb = new StringBuilder();
-			sb.append(Context.myInfo.getId() + "::");
-			sb.append(VectorClock.serializeClock(Context.clock) +"::");
-			out.print(sb.toString());
-			out.close();
+			container = replicationClient.readFile(fileName);
+			System.out.println(container.getContent());
+//			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("testClocks/" + fileName +".clock", true)));
+//			
+//			StringBuilder sb = new StringBuilder();
+//			sb.append(Context.myInfo.getId() + "::");
+//			sb.append(VectorClock.serializeClock(Context.clock) +"::");
+//			out.print(sb.toString());
+//			out.close();
 			
 		} catch (FileNotFoundException e) {
 			System.out.println("File Not Found, Please try again");
 		} catch (NoSuchElementException e) {
 			System.out.println("EMPTY");
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
-			replicationClient.readUnlockFile(fileName);
+			if(container.isQuorumObtained()){
+				replicationClient.readUnlockFile(fileName);
+			}
+			
 		}
 	}
 

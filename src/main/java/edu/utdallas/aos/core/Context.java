@@ -23,5 +23,5 @@ public class Context {
 	public static volatile ConcurrentHashMap<Integer, Node> nodeInfos = new ConcurrentHashMap<>();
 	public static volatile ExponentialBackOff backoff;
 	public static volatile VectorClock clock;
-	public static volatile String DU = "0";
+	public static volatile String DU = "1";
 }
